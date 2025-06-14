@@ -81,7 +81,7 @@ class DatabaseManager:
         if not self.connection:
             print("No conectado a la base de datos. No se puede insertar la tarea.")
             return None
-
+        
         cursor = self.connection.cursor()
         try:
             sql = "INSERT INTO tasks (title, description, status, due_date) VALUES (%s, %s, %s, %s)"

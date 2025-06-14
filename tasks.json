@@ -1,16 +1,37 @@
 [
     {
         "id": 1,
-        "title": "Aprender FastApi",
-        "description": "Siguiente Semana Aprender fastapi",
-        "status": "pendiente",
-        "due_date": "2025-06-14"
+        "title": "Configurar entorno de desarrollo",
+        "description": "Instalar Python, MySQL y dependencias del proyecto.",
+        "status": "completada",
+        "due_date": "2025-06-10"
     },
     {
         "id": 2,
-        "title": "App de gestion",
-        "description": "prueba tecnica de alexis",
+        "title": "Diseñar esquema de base de datos",
+        "description": "Definir tabla 'tasks' y sus columnas.",
         "status": "completada",
-        "due_date": "2025-06-14"
+        "due_date": "2025-06-12"
+    },
+    {
+        "id": 3,
+        "title": "Implementar módulo de conexión a DB",
+        "description": "Crear DatabaseManager y funciones CRUD básicas.",
+        "status": "en progreso",
+        "due_date": "2025-06-18"
+    },
+    {
+        "id": 4,
+        "title": "Desarrollar interfaz de consola",
+        "description": "Programar el menú interactivo para añadir/ver tareas.",
+        "status": "pendiente",
+        "due_date": "2025-06-25"
+    },
+    {
+        "id": 5,
+        "title": "Probar funcionalidad de importación/exportación",
+        "description": "Crear y probar el guardado/carga de tareas en JSON.",
+        "status": "pendiente",
+        "due_date": "2025-06-20"
     }
 ]

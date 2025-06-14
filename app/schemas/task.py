@@ -1,5 +1,11 @@
 from datetime import date
+from typing import List
 from pydantic import BaseModel, Field, validator
+
+class StatusTasks(BaseModel):
+    Pendiente = "pendiente"
+    EnProgreso = "en progreso"
+    Completada = "completada"
 
 class Task(BaseModel):
     """
@@ -8,7 +14,7 @@ class Task(BaseModel):
     """
     title: str = Field(..., min_length=1, description="Titulo de la tarea")
     description: str = Field(..., description="descripcion de la tarea")
-    status: str = Field("pending", description="estado actual de la tarea")
+    status: StatusTasks = Field(StatusTasks.Pendiente, description="estado actual de la tarea")
     due_date: date = Field(..., description="fecha de vencimiento de la tarea (Año-Mes-Dia)")
     #el campo field lo usamos para agregar metadatos a los campos, como descripciones y validaciones
     #por ejemplo min_length para el titulo quiere decir que por lo menos el titulo debe tener un caracter
@@ -25,3 +31,15 @@ class Task(BaseModel):
 
 #cls abreviatura de clase y v abreviatura de valor, se usan como practica estandar al usar pydantic
 
+class Status(BaseModel):
+    Error="error"
+    Success="success"
+
+class Response (BaseModel):
+    message:str
+    status: Status
+    
+class ResponseGetOne (Response):
+    data: Task
+class ResponseGetAll (Response):
+    data: List[Task]
