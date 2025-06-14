@@ -1,0 +1,16 @@
+[
+    {
+        "id": 1,
+        "title": "Aprender FastApi",
+        "description": "Siguiente Semana Aprender fastapi",
+        "status": "pendiente",
+        "due_date": "2025-06-14"
+    },
+    {
+        "id": 2,
+        "title": "App de gestion",
+        "description": "prueba tecnica de alexis",
+        "status": "completada",
+        "due_date": "2025-06-14"
+    }
+]

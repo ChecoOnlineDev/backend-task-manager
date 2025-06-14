@@ -3,9 +3,8 @@ from pydantic import BaseModel, Field, validator
 
 class Task(BaseModel):
     """
-    Clase task que hereda de basemodel de pydantic,definimos los campos que tendrá la tarea
-    y sus validaciones. Esta clase representa una tarea con atributos como título, descripción,
-    estado y fecha de vencimiento. Utiliza Pydantic para la validación de datos.
+    Modelo Pydantic para la entidad 'Task'.
+    Define los campos esperados para una tarea y sus reglas de validación.
     """
     title: str = Field(..., min_length=1, description="Titulo de la tarea")
     description: str = Field(..., description="descripcion de la tarea")
@@ -17,12 +16,12 @@ class Task(BaseModel):
     @validator('status')
     def validate_status(cls, v):
         """
-        Validador personalizado para el campo estatus,y como manejar si no se da un valor 
-        válido. Asegura que el estado de la tarea sea uno de los valores permitidos.
+        validador personalizado para aceptar los cambios de estado de las tareas en español 
         """
         valid_statuses = ["pendiente", "en progreso", "completada"]
         if v not in valid_statuses:
-            raise ValueError(f"Status must be one of {valid_statuses}")
+            raise ValueError(f"El estado debe ser uno de: {', '.join(valid_statuses)}")
         return v
 
 #cls abreviatura de clase y v abreviatura de valor, se usan como practica estandar al usar pydantic
+

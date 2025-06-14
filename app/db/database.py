@@ -46,7 +46,8 @@ class DatabaseManager:
     def create_tasks_table(self):
         """
         Crea la tabla 'tasks' en la base de datos si aún no existe.
-        Define la estructura de l
+        Define la estructura de las columnas para almacenar los atributos de una tarea.
+        Esta operación es idempotente (no causa error si la tabla ya existe).
         """
         if not self.connection:
             print("No conectado a la base de datos. No se puede crear la tabla.")
@@ -73,12 +74,12 @@ class DatabaseManager:
     def insert_task(self, task: Task) -> Union[int, None]:
         """
         Inserta una nueva tarea en la tabla 'tasks'.
-        Recibe un objeto 'Task' y extrae sus atributos
+        Recibe un objeto 'Task' (validado por Pydantic) y extrae sus atributos
         para insertarlos en las columnas correspondientes de la tabla.
         Retorna el ID de la tarea recién insertada o None si ocurrió un error.
         """
         if not self.connection:
-            print(" No se puede insertar la tarea.")
+            print("No conectado a la base de datos. No se puede insertar la tarea.")
             return None
 
         cursor = self.connection.cursor()
@@ -92,3 +93,52 @@ class DatabaseManager:
             return cursor.lastrowid
         except Error as e:
             print(f"Error al insertar la tarea: {e}")
+            return None # Importante: Añadir este 'return None' aquí para cubrir el 'except'
+        finally: # Este bloque 'finally' es crucial para asegurar que el cursor se cierre
+            cursor.close()
+
+    def get_all_tasks(self) -> List[Dict[str, Union[int, str, date]]]:
+        """
+        Recupera todas las tareas almacenadas actualmente en la base de datos.
+        Retorna una lista de diccionarios, donde cada diccionario representa una fila (tarea).
+        """
+        if not self.connection:
+            print("No conectado a la base de datos. No se pueden recuperar las tareas.")
+            return []
+
+        # se usa dictionary=True para que los resultados de la consulta se devuelvan como diccionarios
+        cursor = self.connection.cursor(dictionary=True)
+        try:
+            cursor.execute("SELECT id, title, description, status, due_date FROM tasks")
+            tasks = cursor.fetchall()
+            return tasks
+        except Error as e:
+            print(f"Error al recuperar tareas: {e}")
+            return []
+        finally:
+            cursor.close()
+
+    def get_upcoming_tasks(self, days: int = 3) -> List[Dict[str, Union[int, str, date]]]:
+        """
+        Recupera tareas cuya fecha de vencimiento es en los próximos días (o antes).
+        Por defecto, busca tareas que vencen hoy o en los próximos 3 días.
+        """
+        if not self.connection:
+            print("No conectado a la base de datos. No se pueden recuperar las tareas próximas.")
+            return []
+
+        cursor = self.connection.cursor(dictionary=True)
+        try:
+            today = date.today()
+            # Calcular la fecha límite sumando "days" a la fecha actual
+            upcoming_date_limit = today + timedelta(days=days)
+            # Consulta SQL que filtra por el rango de fechas de vencimiento
+            sql = "SELECT id, title, description, status, due_date FROM tasks WHERE due_date BETWEEN %s AND %s ORDER BY due_date ASC"
+            cursor.execute(sql, (today, upcoming_date_limit))
+            tasks = cursor.fetchall()
+            return tasks
+        except Error as e:
+            print(f"Error al recuperar tareas próximas: {e}")
+            return []
+        finally:
+            cursor.close()
